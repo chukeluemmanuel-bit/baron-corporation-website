@@ -58,7 +58,7 @@
       <section class="account-intro">
         <span class="label">Create Account</span>
         <h1>Choose the account that matches your relationship with Baron Corporation.</h1>
-        <p>Clients and job applicants have different portal needs. The live system will keep their account experiences separate.</p>
+        <p>Clients and job applicants have different portal needs. Your account type determines which secure portal you enter after sign-in.</p>
 
         <div class="account-type-grid">
           <div class="account-type-card"><b>Client Account</b><p>For project inquiries, quotes, company details, and future project activity.</p></div>
@@ -68,37 +68,38 @@
 
       <section class="auth-card">
         <h2>Create your account</h2>
-        <p class="auth-sub">Account activation will become live after secure backend deployment.</p>
+        <p class="auth-sub">Create a secure Baron Corporation account using your email address and password.</p>
 
         <form id="createAccountForm">
           <label>Account type
-            <select required>
+            <select name="account_type" required>
               <option value="">Select account type</option>
-              <option>Client account</option>
-              <option>Applicant account</option>
+              <option value="client">Client account</option>
+              <option value="applicant">Applicant account</option>
             </select>
           </label>
           <div class="form-row">
-            <label>First name<input type="text" required></label>
-            <label>Last name<input type="text" required></label>
+            <label>First name<input type="text" name="first_name" autocomplete="given-name" required></label>
+            <label>Last name<input type="text" name="last_name" autocomplete="family-name" required></label>
           </div>
-          <label>Email address<input type="email" required></label>
-          <label>Phone number<input type="tel"></label>
-          <label>Company / Organization<input type="text" placeholder="Optional for applicants"></label>
+          <label>Email address<input type="email" name="email" autocomplete="email" required></label>
+          <label>Phone number<input type="tel" name="phone" autocomplete="tel"></label>
+          <label>Company / Organization<input type="text" name="company" autocomplete="organization" placeholder="Optional for applicants"></label>
           <div class="form-row">
-            <label>Password<input type="password" required></label>
-            <label>Confirm password<input type="password" required></label>
+            <label>Password<input type="password" name="password" autocomplete="new-password" minlength="8" required></label>
+            <label>Confirm password<input type="password" name="confirm_password" autocomplete="new-password" minlength="8" required></label>
           </div>
           <label class="checkbox">
             <input type="checkbox" required>
-            <span>I agree to the account terms and understand that the live portal will store account information securely once authentication is enabled.</span>
+            <span>I agree to the account terms and consent to Baron Corporation using this information to provide account access and related communication.</span>
           </label>
           <button class="btn btn-gold" type="submit">Create Account</button>
-          <div class="form-success">Account creation is disabled in preview mode. The live backend will create and store accounts securely.</div>
+          <div class="form-success" role="status" aria-live="polite"></div>
+          <div class="form-error" role="alert" aria-live="assertive"></div>
         </form>
 
         <div class="auth-switch" style="margin-top:18px">Already have an account? <a href="sign-in.html">Sign in</a></div>
-        <div class="auth-notice">Do not use a real password in this preview. No authentication backend is connected yet.</div>
+        <div class="auth-security-note">Account authentication is connected to Supabase. Passwords are handled by the authentication service and are not placed in the public website code.</div>
       </section>
     </div>
   </main>
@@ -115,5 +116,8 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

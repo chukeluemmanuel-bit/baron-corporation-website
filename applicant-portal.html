@@ -7,7 +7,7 @@
   <title>Applicant Portal | Baron Corporation</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-portal="applicant">
 
   <div class="topbar">
     <div class="container topbar-inner">
@@ -57,19 +57,19 @@
     <div class="container">
       <div class="portal-header">
         <div>
-          <span class="portal-demo-badge">PREVIEW MODE</span>
+          <span class="portal-live-badge">SECURE ACCOUNT</span>
           <h1>Applicant Portal</h1>
-          <p>This is the planned dashboard for job applicants. Résumés will still be emailed separately to management as requested.</p>
+          <p>This dashboard is available only to a signed-in Baron Corporation applicant account. Résumés are still emailed separately to management as requested.</p>
         </div>
         <div class="portal-actions">
           <a class="btn btn-outline" href="index.html#careers">Career Application</a>
-          <a class="btn btn-black" href="sign-in.html">Sign Out</a>
+          <a class="btn btn-black" href="#" data-sign-out>Sign Out</a>
         </div>
       </div>
 
       <div class="portal-layout">
         <aside class="portal-sidebar">
-          <div class="portal-user"><b>Applicant Account</b><span>Preview applicant</span></div>
+          <div class="portal-user"><b data-user-name>Applicant Account</b><span data-user-email>Loading account…</span></div>
           <div class="portal-side-links">
             <a class="active" href="#">Dashboard</a>
             <a href="#">Applications</a>
@@ -88,7 +88,7 @@
 
           <div class="portal-panel">
             <div class="portal-panel-head"><h2>Application status</h2><a class="btn btn-outline" href="index.html#careers">Apply</a></div>
-            <div class="portal-empty">No applications are stored in preview mode.</div>
+            <div class="portal-empty">No application records have been added to this account yet.</div>
           </div>
 
           <div class="portal-panel">
@@ -113,5 +113,8 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

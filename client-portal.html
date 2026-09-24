@@ -7,7 +7,7 @@
   <title>Client Portal | Baron Corporation</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-portal="client">
 
   <div class="topbar">
     <div class="container topbar-inner">
@@ -57,19 +57,19 @@
     <div class="container">
       <div class="portal-header">
         <div>
-          <span class="portal-demo-badge">PREVIEW MODE</span>
+          <span class="portal-live-badge">SECURE ACCOUNT</span>
           <h1>Client Portal</h1>
-          <p>This is the planned account dashboard for Baron Corporation clients. Live data will appear here after secure backend deployment.</p>
+          <p>This dashboard is available only to a signed-in Baron Corporation client account. Project records and documents will be added as the portal expands.</p>
         </div>
         <div class="portal-actions">
           <a class="btn btn-outline" href="index.html#quote">New Project Inquiry</a>
-          <a class="btn btn-black" href="sign-in.html">Sign Out</a>
+          <a class="btn btn-black" href="#" data-sign-out>Sign Out</a>
         </div>
       </div>
 
       <div class="portal-layout">
         <aside class="portal-sidebar">
-          <div class="portal-user"><b>Client Account</b><span>Preview user</span></div>
+          <div class="portal-user"><b data-user-name>Client Account</b><span data-user-email>Loading account…</span></div>
           <div class="portal-side-links">
             <a class="active" href="#">Dashboard</a>
             <a href="#">Project Inquiries</a>
@@ -91,16 +91,16 @@
             <div class="portal-panel-head"><h2>Recent project activity</h2><a class="btn btn-outline" href="index.html#quote">Submit Inquiry</a></div>
             <div class="portal-table">
               <div class="portal-row header"><span>Project / Inquiry</span><span>Status</span><span>Updated</span></div>
-              <div class="portal-empty">No project activity is stored in preview mode.</div>
+              <div class="portal-empty">No project activity has been added to this account yet.</div>
             </div>
           </div>
 
           <div class="portal-panel">
-            <div class="portal-panel-head"><h2>What the live portal can support</h2></div>
+            <div class="portal-panel-head"><h2>Portal features being expanded</h2></div>
             <div class="portal-table">
-              <div class="portal-row"><span>Project and quote request history</span><span class="status-pill">Planned</span><span>Deployment</span></div>
-              <div class="portal-row"><span>Project documents and communication</span><span class="status-pill">Planned</span><span>Deployment</span></div>
-              <div class="portal-row"><span>Company/contact profile management</span><span class="status-pill gold">Planned</span><span>Deployment</span></div>
+              <div class="portal-row"><span>Project and quote request history</span><span class="status-pill">Coming soon</span><span>Portal</span></div>
+              <div class="portal-row"><span>Project documents and communication</span><span class="status-pill">Coming soon</span><span>Portal</span></div>
+              <div class="portal-row"><span>Company/contact profile management</span><span class="status-pill gold">Coming soon</span><span>Portal</span></div>
             </div>
           </div>
         </section>
@@ -120,5 +120,8 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

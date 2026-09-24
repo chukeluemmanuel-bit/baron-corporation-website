@@ -1,4 +1,3 @@
-
 const menuButton = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.main-nav');
 
@@ -19,7 +18,9 @@ document.querySelectorAll('[data-accordion]').forEach(item => {
   btn?.addEventListener('click', () => item.classList.toggle('open'));
 });
 
-document.querySelectorAll('form').forEach(form => {
+// Public inquiry/application forms remain in preview mode for now.
+// Account forms are handled by auth.js and connect to Supabase Auth.
+document.querySelectorAll('form:not(#signInForm):not(#createAccountForm)').forEach(form => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const success = form.querySelector('.form-success, .career-form-success');
@@ -32,16 +33,3 @@ document.querySelectorAll('form').forEach(form => {
 
 const year = document.getElementById('year');
 if (year) year.textContent = new Date().getFullYear();
-
-
-// V14 preview account forms
-document.getElementById('signInForm')?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const msg = e.currentTarget.querySelector('.form-success');
-  if (msg) msg.style.display = 'block';
-});
-document.getElementById('createAccountForm')?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const msg = e.currentTarget.querySelector('.form-success');
-  if (msg) msg.style.display = 'block';
-});

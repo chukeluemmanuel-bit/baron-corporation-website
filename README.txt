@@ -81,3 +81,18 @@ V14 ACCOUNT / PORTAL UPDATE
 - No real passwords or account data are stored in this preview.
 - Real authentication requires backend/database deployment.
 - Résumés remain email-only for applicants.
+
+V15 LIVE AUTHENTICATION UPDATE
+- Connected Create Account and Sign In pages to Supabase Auth.
+- Supabase project URL: https://qonmwwjaefzcpdymjkyo.supabase.co
+- Uses the project's browser-safe publishable key. No secret/service-role key is included.
+- Client and Applicant account types are stored as signup metadata.
+- Email/password signup is live.
+- Email confirmation redirects to https://baroncorporation.space/sign-in.html?verified=1.
+- Sign-in routes users to the appropriate Client or Applicant portal.
+- Portal pages require an authenticated session and redirect signed-out visitors to Sign In.
+- Portal pages display the signed-in user's name and email and include working Sign Out actions.
+- Signed-in navigation changes from Sign In/Create Account to Portal/Sign Out.
+- Password UI requires at least 8 characters with lowercase, uppercase, and a digit.
+- Public career application and project inquiry forms are NOT yet stored in Supabase; they remain preview-only until database tables, RLS policies, and anti-spam handling are configured.
+- Before testing email confirmation, verify Supabase Authentication > URL Configuration has Site URL set to https://baroncorporation.space and the configured redirect URLs include the sign-in/client/applicant pages.
