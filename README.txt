@@ -1,98 +1,50 @@
-BARON CORPORATION WEBSITE - VERSION 2
+BARON CORPORATION WEBSITE - VERSION 16
+JOB MARKETPLACE REDESIGN
 
-Company profile used:
-- Official name: Baron Corporation
-- Private engineering company
-- Based in Los Angeles, California
-- Takes engineering/project jobs and manages them through completion
-- Hires workers and builds project teams
-- Management email: mgt.baroncorporation@gmail.com
+PURPOSE
+- Replaces the engineering-services presentation with a U.S. job marketplace.
+- Main public flow: Search job -> View details -> Apply -> Waiting for Review.
+- After submission, all further communication continues through email.
+- Résumés are NOT requested in the first website application.
 
-Included sections:
-- Corporate home / hero
-- About Baron Corporation
-- Engineering capabilities
-- Project delivery
-- Safety / quality / execution standard
-- Careers & workforce
-- Contact form
-- Mobile-responsive navigation
-- Scroll animations
+WHAT V16 INCLUDES
+- Searchable homepage with live autocomplete as the user types.
+- State filter and job-type filtering.
+- Jobs page, job detail page, application page, and confirmation page.
+- Confirmation language: Waiting for Review / next steps by email.
+- No SSN, banking, card, password, or payment fields.
+- Private management page to publish/hide/delete job listings and review applications.
+- "Email applicant" action for continuing the process by email.
+- Existing Supabase project URL + browser-safe publishable key.
+- Old engineering service URLs redirect to the jobs marketplace.
 
-Still needed before public launch:
-- Official street/office address (if you want it public)
-- Business phone number
-- Exact engineering specialties / types of jobs accepted
-- Real project photos and case studies
-- Logo, if you already have one
-- Legal privacy/terms text
-- Hosting/domain connection
+IMPORTANT: ONE DATABASE STEP IS REQUIRED
+Before applications and job listings can work, open Supabase > SQL Editor and run:
+  supabase-job-marketplace.sql
+This creates the jobs and applications tables and Row Level Security policies.
 
+MANAGEMENT ACCESS
+- Management page: /management.html
+- Only a signed-in Supabase user whose email is exactly:
+  mgt.baroncorporation@gmail.com
+  can manage jobs or read applications.
+- If that email does not yet have a Supabase Auth account, create/confirm it using create-account.html or Supabase Authentication > Users.
 
-V4 updates:
-- Added supplied Baron Corporation logo to website header
-- Added management phone: +1 562-567-8173
-- No street/office address is displayed
-- Public service base remains Los Angeles, California
+DEPLOYMENT
+- Upload/replace these V16 files in the GitHub repo already connected to Cloudflare:
+  chukeluemmanuel-bit/baron-corporation-website
+- Commit directly to main.
+- Cloudflare should build automatically using the deployment configuration already set up.
 
-V7 CAREERS UPDATE
-- Full online employment application form added.
-- Resume/CV upload is intentionally excluded.
-- Applicants are instructed to email resumes/CVs to mgt.baroncorporation@gmail.com.
-- Management email is also listed for career questions and follow-up.
-- No sensitive financial or identity-number fields are requested.
-- The preview form does not transmit data until a live form backend is connected.
-- The prior preview visibility bug was fixed: website content is visible even if JavaScript is blocked.
+ABOUT "ALL JOBS IN THE USA"
+V16 searches jobs that are actually published in your Baron Jobs database.
+It deliberately does NOT fabricate or claim to contain every U.S. opening.
+To automatically import nationwide listings from other employers, a legitimate jobs-data provider/API must be connected later.
 
-V8 PROJECTS UPDATE
-- Added a dedicated Projects / Project Capabilities page (projects.html).
-- Homepage Projects navigation now opens the dedicated page.
-- Reframed project content as capabilities, not completed client case studies.
-- Added Civil & Structural, Mechanical, Electrical, Facility Engineering,
-  Construction Support, Welding & Fabrication, Industrial Equipment,
-  and Project Management capability sections.
-- Added typical scope examples and compliance caveats where appropriate.
-- Added a future-case-study placeholder for real approved completed projects.
-- No client names, contract values, project dates, certifications, awards,
-  or performance outcomes were invented.
-
-V9 VISUAL REDESIGN
-- Complete visual redesign in white, black, gold, and deep blue.
-- New premium hero, navigation, topbar, service bento, project presentation, careers layout, quote section, and footer.
-- Projects page redesigned to match.
-- Content and company information preserved.
-- Applicant application flow preserved.
-
-V13 SERVICES UPDATE
-- Added a dedicated Services overview page.
-- Added 10 detailed service pages.
-- Updated homepage service cards to open the detailed service pages.
-- Preserved V12/V11 visual direction and mobile layout.
-- Added scope examples, environments, delivery approach, and careful compliance notes.
-- No certifications, licenses, project outcomes, client names, or regulated approvals were invented.
-
-V14 ACCOUNT / PORTAL UPDATE
-- Replaced JavaScript-dependent mobile hamburger navigation with a CSS-only menu.
-- Added Sign In and Create Account links to desktop and mobile navigation.
-- Added sign-in.html.
-- Added create-account.html with Client and Applicant account types.
-- Added client-portal.html preview dashboard.
-- Added applicant-portal.html preview dashboard.
-- No real passwords or account data are stored in this preview.
-- Real authentication requires backend/database deployment.
-- Résumés remain email-only for applicants.
-
-V15 LIVE AUTHENTICATION UPDATE
-- Connected Create Account and Sign In pages to Supabase Auth.
-- Supabase project URL: https://qonmwwjaefzcpdymjkyo.supabase.co
-- Uses the project's browser-safe publishable key. No secret/service-role key is included.
-- Client and Applicant account types are stored as signup metadata.
-- Email/password signup is live.
-- Email confirmation redirects to https://baroncorporation.space/sign-in.html?verified=1.
-- Sign-in routes users to the appropriate Client or Applicant portal.
-- Portal pages require an authenticated session and redirect signed-out visitors to Sign In.
-- Portal pages display the signed-in user's name and email and include working Sign Out actions.
-- Signed-in navigation changes from Sign In/Create Account to Portal/Sign Out.
-- Password UI requires at least 8 characters with lowercase, uppercase, and a digit.
-- Public career application and project inquiry forms are NOT yet stored in Supabase; they remain preview-only until database tables, RLS policies, and anti-spam handling are configured.
-- Before testing email confirmation, verify Supabase Authentication > URL Configuration has Site URL set to https://baroncorporation.space and the configured redirect URLs include the sign-in/client/applicant pages.
+APPLICATION FLOW
+1. Visitor searches a job.
+2. Visitor opens the job detail page.
+3. Visitor submits the application.
+4. Website shows "Waiting for Review."
+5. Management reviews the application in /management.html.
+6. Any further request, including a résumé request, happens by email.
