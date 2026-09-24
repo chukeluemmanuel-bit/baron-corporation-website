@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
-  document.querySelectorAll('[data-scroll-jobs]').forEach(el => el.addEventListener('click', () => document.getElementById('jobs')?.scrollIntoView({behavior:'smooth'})));
+  const menu = document.querySelector('[data-menu-button]');
+  const nav = document.querySelector('[data-nav]');
+  menu?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    menu.setAttribute('aria-expanded', String(!!open));
+  });
 });
