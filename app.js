@@ -3,6 +3,7 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const qs = id => document.getElementById(id);
   const states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'];
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xaenbldo';
 
   function applyUrl(title, family='', state=''){
     const p=new URLSearchParams({role:title}); if(family)p.set('family',family); if(state)p.set('state',state); return 'apply.html?'+p.toString();
@@ -40,6 +41,47 @@
     const count=qs('roleCount'); if(count) count.textContent=`${list.length.toLocaleString()} job titles`;
   }
 
+  async function sendApplicationEmail(payload, preferredState){
+    const fullName=`${payload.first_name} ${payload.last_name}`.trim();
+    const fd=new FormData();
+    fd.append('subject', `New Baron Job Application - ${payload.job_title_snapshot} - ${fullName}`);
+    fd.append('application_status', 'Waiting for Review');
+    fd.append('job_title', payload.job_title_snapshot);
+    fd.append('preferred_work_state', preferredState || 'Any state');
+    fd.append('first_name', payload.first_name);
+    fd.append('last_name', payload.last_name);
+    fd.append('email', payload.email);
+    fd.append('phone', payload.phone || 'Not provided');
+    fd.append('current_city', payload.city);
+    fd.append('current_state', payload.state);
+    fd.append('years_experience', payload.years_experience ?? 'Not provided');
+    fd.append('recent_job_title', payload.recent_job_title || 'Not provided');
+    fd.append('certification', payload.certification || 'Not provided');
+    fd.append('availability', payload.availability || 'Not provided');
+    fd.append('professional_summary', payload.professional_summary);
+    fd.append('additional_information', payload.additional_info || 'None');
+    fd.append('consent', 'Yes');
+    fd.append('website', 'baroncorporation.space');
+
+    const response=await fetch(FORMSPREE_ENDPOINT, {
+      method:'POST',
+      body:fd,
+      headers:{'Accept':'application/json'}
+    });
+    if(!response.ok){
+      let message='Could not email your application. Please try again.';
+      try{
+        const data=await response.json();
+        if(Array.isArray(data?.errors) && data.errors.length){
+          message=data.errors.map(x=>x.message).filter(Boolean).join(', ') || message;
+        } else if(data?.error){
+          message=data.error;
+        }
+      }catch(_){ }
+      throw new Error(message);
+    }
+  }
+
   function setupApply(){
     const form=qs('applicationForm'); if(!form) return;
     const p=new URLSearchParams(location.search); const role=p.get('role')||''; const family=p.get('family')||'Other'; const pref=p.get('state')||'';
@@ -52,15 +94,21 @@
       const errorBox=form.querySelector('.form-error'); errorBox.hidden=true;
       const btn=form.querySelector('button[type=submit]'); btn.disabled=true;btn.textContent='Submitting...';
       try{
-        if(!window.baronSupabase) throw new Error('Application service is not available. Please refresh and try again.');
-        const fd=new FormData(form); if(fd.get('website')) return;
-        const {data:sessionData}=await window.baronSupabase.auth.getSession();
+        const fd=new FormData(form);
+        if(fd.get('website')){ btn.disabled=false;btn.textContent='Submit Application'; return; }
+        let sessionUserId=null;
+        if(window.baronSupabase){
+          try{
+            const {data:sessionData}=await window.baronSupabase.auth.getSession();
+            sessionUserId=sessionData?.session?.user?.id||null;
+          }catch(_){ }
+        }
         const preferred=fd.get('preferred_state')||'Any state';
         const notes=[`Preferred work state: ${preferred}`, fd.get('additional_info')||''].filter(Boolean).join('\n\n');
         const payload={
           job_id:null,
           job_title_snapshot:String(fd.get('job_title_snapshot')||'').trim(),
-          user_id:sessionData?.session?.user?.id||null,
+          user_id:sessionUserId,
           first_name:String(fd.get('first_name')||'').trim(),
           last_name:String(fd.get('last_name')||'').trim(),
           email:String(fd.get('email')||'').trim(),
@@ -77,10 +125,28 @@
           review_status:'waiting_review'
         };
         if(!payload.job_title_snapshot) throw new Error('Please enter the job title you are interested in.');
-        const {error}=await window.baronSupabase.from('applications').insert(payload);
-        if(error) throw error;
-        const cp=new URLSearchParams({role:payload.job_title_snapshot,email:payload.email}); location.href='application-confirmation.html?'+cp.toString();
-      }catch(err){errorBox.textContent=err.message||'Could not submit application.';errorBox.hidden=false;btn.disabled=false;btn.textContent='Submit Application';}
+
+        // Email delivery is the primary submission path. Do not show success unless Formspree accepts it.
+        await sendApplicationEmail(payload, preferred);
+
+        // Keep the Supabase management copy when available. A database issue should not discard an emailed application.
+        if(window.baronSupabase){
+          try{
+            const {error}=await window.baronSupabase.from('applications').insert(payload);
+            if(error) console.warn('Application emailed but database copy could not be saved:', error.message);
+          }catch(err){
+            console.warn('Application emailed but database copy could not be saved:', err);
+          }
+        }
+
+        const cp=new URLSearchParams({role:payload.job_title_snapshot,email:payload.email});
+        location.href='application-confirmation.html?'+cp.toString();
+      }catch(err){
+        errorBox.textContent=err.message||'Could not submit application.';
+        errorBox.hidden=false;
+        btn.disabled=false;
+        btn.textContent='Submit Application';
+      }
     });
   }
 

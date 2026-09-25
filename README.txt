@@ -1,4 +1,4 @@
-BARON CORPORATION WEBSITE - VERSION 17
+BARON CORPORATION WEBSITE - VERSION 18
 CAREER-INTEREST MARKETPLACE REDESIGN
 
 WHAT CHANGED
@@ -28,3 +28,9 @@ EMAIL NOTIFICATIONS
 Applications are stored in Supabase and visible in management.html.
 Automatic 'new application' notification emails to management still require an outbound email service or server-side email integration.
 The dashboard already provides an Email Applicant button for follow-up.
+
+
+V18 EMAIL DELIVERY
+- Applications are sent directly through Formspree endpoint xaenbldo.
+- Successful submissions are also saved to Supabase when available.
+- Applicant is then redirected to Waiting for Review.
