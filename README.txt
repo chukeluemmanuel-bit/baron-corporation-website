@@ -1,4 +1,4 @@
-BARON CORPORATION WEBSITE — VERSION 20
+BARON CORPORATION WEBSITE — VERSION 21
 
 PREMIUM HOMEPAGE UX UPDATE
 
@@ -11,3 +11,9 @@ Changes from V19:
 - Email composer branding now uses the transparent logo asset.
 
 Existing V19 features remain intact, including the 931-role career catalog, Supabase application storage, Formspree application email delivery, management dashboard, support center, responsive layout, and animations.
+
+
+V21 UPDATE
+- Mobile homepage now shows the U.S. Career Marketplace hero first.
+- Career Search panel appears immediately below the hero content.
+- Desktop layout remains unchanged.
