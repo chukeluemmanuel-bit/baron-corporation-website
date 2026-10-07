@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Baron Corporation mark</title>
+  <desc id="desc">Three gold architectural bars on a transparent background.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#B97818"/>
+      <stop offset="0.42" stop-color="#E1A837"/>
+      <stop offset="0.72" stop-color="#F4CB68"/>
+      <stop offset="1" stop-color="#FFD97D"/>
+    </linearGradient>
+    <linearGradient id="gold2" x1="0" y1="1" x2="0.95" y2="0">
+      <stop offset="0" stop-color="#A96712"/>
+      <stop offset="0.55" stop-color="#DB9C2C"/>
+      <stop offset="1" stop-color="#F2C25F"/>
+    </linearGradient>
+  </defs>
+  <polygon points="14,69 40,52 40,79 14,96" fill="url(#gold2)"/>
+  <polygon points="49,29 77,9 77,78 49,98" fill="url(#gold)"/>
+  <polygon points="85,39 108,56 108,98 85,98" fill="url(#gold)"/>
+</svg>

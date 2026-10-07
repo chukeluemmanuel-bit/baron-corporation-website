@@ -41,3 +41,45 @@
 .reveal{transform:translateY(10px);transition:transform .6s cubic-bezier(.2,.7,.2,1)}.reveal.is-visible{transform:none}.float-card{animation:softFloat 5s ease-in-out infinite alternate}@keyframes softFloat{to{transform:translateY(-6px)}}
 @media(max-width:980px){.main-nav{display:none}.menu-toggle{display:block}.nav-actions .nav-button:not(.primary){display:none}.mobile-menu{position:fixed;inset:78px 18px auto;background:#fff;border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:var(--shadow);z-index:80}.mobile-menu.open{display:grid}.mobile-menu a{padding:13px 10px;border-bottom:1px solid #eef2f5;font-weight:750;font-size:13px}.hero-grid{grid-template-columns:1fr}.hero-panel{max-width:700px}.section-heading{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr 1fr}.category-grid{grid-template-columns:repeat(2,1fr)}.process-grid{grid-template-columns:1fr 1fr}.process-line{display:none}.stats-band{grid-template-columns:1fr 1fr}.support-cta{grid-template-columns:1fr}.support-actions{justify-content:flex-start}.catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-toolbar .input{grid-column:1/-1}.role-grid{grid-template-columns:1fr 1fr}.apply-layout{grid-template-columns:1fr}.application-side{position:static}.auth-page{grid-template-columns:1fr}.auth-visual{display:none}.admin-hero{grid-template-columns:1fr}.admin-quick{justify-content:flex-start}.metric-grid{grid-template-columns:1fr 1fr}.admin-toolbar{grid-template-columns:1fr 1fr}.admin-toolbar .input{grid-column:1/-1}.email-composer{grid-template-columns:1fr}.support-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.container{width:min(100% - 26px,1180px)}.nav-wrap{height:70px}.site-header .brand-text{display:none}.brand-mark{width:50px;height:43px}.mobile-menu{top:70px}.hero{padding:54px 0 65px}.hero h1{font-size:50px}.hero-copy>p{font-size:15px}.search-main{grid-template-columns:1fr}.search-action{flex-direction:column}.panel-metrics{grid-template-columns:1fr 1fr}.panel-metrics .metric-mini:last-child{grid-column:1/-1}.section{padding:66px 0}.feature-grid,.category-grid,.process-grid,.role-grid,.form-grid,.confirm-grid,.detail-grid{grid-template-columns:1fr}.form-field.full,.detail-box.full{grid-column:auto}.stats-band{grid-template-columns:1fr 1fr;padding:26px}.stats-band h3{grid-column:1/-1}.support-cta{padding:26px}.support-cta h2{font-size:34px}.catalog-toolbar{grid-template-columns:1fr}.catalog-toolbar .input{grid-column:auto}.catalog-summary{align-items:flex-start;flex-direction:column}.form-card{padding:20px}.stepper{overflow:auto}.step-chip{min-width:120px}.confirmation-card{padding:32px 20px}.admin-hero{padding:22px}.admin-hero h1{font-size:34px}.metric-grid{grid-template-columns:1fr 1fr}.admin-toolbar{grid-template-columns:1fr}.admin-toolbar .input{grid-column:auto}.application-card{grid-template-columns:1fr}.application-actions{justify-content:flex-start}.email-composer{grid-template-columns:1fr}.footer-links{grid-template-columns:1fr 1fr}.footer-bottom{flex-direction:column}.support-fab{bottom:14px;right:14px}.support-drawer{right:14px;bottom:78px;width:calc(100% - 28px)}}
+
+/* V20 public-brand refinements */
+.brand-mark{
+  width:56px;
+  height:54px;
+  object-fit:contain;
+  object-position:center;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:transparent;
+}
+.footer-links{grid-template-columns:repeat(2,minmax(0,1fr));}
+.email-preview-head img{
+  width:72px;
+  height:52px;
+  object-fit:contain;
+  border-radius:0;
+  background:transparent;
+}
+
+/* Keep management access unadvertised on public pages while direct URLs remain available. */
+.site-header .nav-actions:empty{display:none;}
+
+@media(max-width:640px){
+  /* Search is intentionally the first hero content on phones. */
+  .hero{padding:18px 0 56px;}
+  .hero-grid{display:flex;flex-direction:column;gap:26px;align-items:stretch;}
+  .hero-panel{order:-1;width:100%;max-width:none;padding:14px;border-radius:22px;animation:none;}
+  .hero-panel::before{border-radius:22px;}
+  .panel-top{margin-bottom:10px;}
+  .search-box{padding:12px;border-radius:16px;}
+  .search-main{grid-template-columns:1fr;gap:9px;}
+  .search-action{flex-direction:row;gap:8px;margin-top:9px;}
+  .search-action .btn{min-height:48px;padding:0 11px;font-size:12px;}
+  .quick-roles,.panel-metrics{display:none;}
+  .hero-copy{padding-top:2px;}
+  .hero h1{font-size:46px;margin:14px 0 20px;}
+  .hero-copy>p{font-size:15px;margin-bottom:22px;}
+  .brand-mark{width:54px;height:50px;}
+  .footer-links{grid-template-columns:1fr 1fr;}
+}
