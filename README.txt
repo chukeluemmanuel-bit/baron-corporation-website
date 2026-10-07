@@ -1,4 +1,4 @@
-BARON CORPORATION WEBSITE — VERSION 22
+BARON CORPORATION WEBSITE — VERSION 23
 
 PREMIUM HOMEPAGE UX UPDATE
 
@@ -17,3 +17,11 @@ V21 UPDATE
 - Mobile homepage now shows the U.S. Career Marketplace hero first.
 - Career Search panel appears immediately below the hero content.
 - Desktop layout remains unchanged.
+
+
+V23 UPDATE
+- Rebuilt public header in a Framer-inspired layout using Baron Corporation navy/gold styling.
+- Transparent gold Baron mark + Baron Corporation name on the left.
+- Added visible Log in and Sign up actions in the header.
+- Preserved the hamburger menu and existing public navigation.
+- Optimized header spacing for mobile screens.

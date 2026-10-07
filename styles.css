@@ -150,3 +150,45 @@
   .header-wordmark-main{font-size:20px}
   .header-wordmark-sub{font-size:6.5px}
 }
+
+
+/* V23 Framer-inspired header in Baron Corporation navy/gold theme */
+.v23-nav{height:84px;gap:18px}
+.header-brand{gap:11px;flex:0 0 auto}
+.header-brand .brand-mark{width:44px;height:44px}
+.header-brand-name{font-family:Manrope,Inter,sans-serif;font-size:17px;font-weight:800;letter-spacing:-.025em;color:#07111f;white-space:nowrap}
+.v23-auth-actions{margin-left:10px;gap:8px}
+.header-login,.header-signup{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:13px;font-weight:800;font-size:13px;transition:transform .18s,background .18s,color .18s,box-shadow .18s}
+.header-login{padding:0 13px;color:#41536a;background:transparent}
+.header-login:hover{color:#07111f;background:#f3f6f9}
+.header-signup{padding:0 18px;color:#111923;background:linear-gradient(135deg,var(--gold),var(--gold2));box-shadow:0 10px 24px rgba(215,166,63,.22)}
+.header-signup:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(215,166,63,.28)}
+.v23-nav .main-nav{margin-left:auto}
+.v23-nav .menu-toggle{margin-left:2px}
+@media(max-width:980px){
+  .v23-nav{height:76px;gap:10px}
+  .v23-nav .main-nav{display:none}
+  .v23-nav .menu-toggle{display:block}
+  .v23-auth-actions{margin-left:auto;gap:4px}
+  .header-login,.header-signup{min-height:42px;font-size:13px}
+  .header-login{padding:0 10px}
+  .header-signup{padding:0 15px}
+  .mobile-menu{top:76px}
+}
+@media(max-width:640px){
+  .v23-nav{height:76px;gap:7px}
+  .header-brand{gap:8px;min-width:0}
+  .header-brand .brand-mark{width:40px;height:40px;flex:0 0 auto}
+  .header-brand-name{font-size:14px;max-width:112px;overflow:hidden;text-overflow:ellipsis}
+  .v23-auth-actions{gap:2px}
+  .header-login{padding:0 7px;font-size:12px}
+  .header-signup{padding:0 12px;font-size:12px;min-height:40px;border-radius:12px}
+  .v23-nav .menu-toggle{padding:4px;margin-left:0}
+  .v23-nav .menu-toggle span{width:24px;margin:5px 3px}
+}
+@media(max-width:390px){
+  .header-brand-name{font-size:13px;max-width:92px}
+  .header-brand .brand-mark{width:38px;height:38px}
+  .header-login{padding:0 5px;font-size:11px}
+  .header-signup{padding:0 10px;font-size:11px}
+}
