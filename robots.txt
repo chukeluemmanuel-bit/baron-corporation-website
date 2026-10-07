@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://baroncorporation.space/sitemap.xml

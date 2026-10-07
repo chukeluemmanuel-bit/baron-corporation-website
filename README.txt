@@ -1,19 +1,20 @@
-BARON CORPORATION WEBSITE — VERSION 22
+BARON CORPORATION WEBSITE — VERSION 24
 
-PREMIUM HOMEPAGE UX UPDATE
+V24 PREMIUM REBUILD
+- Full premium visual redesign across the public site
+- Faster, cleaner mobile-first layout and safer responsive behavior
+- Animated page loader, scroll progress, glass header and refined motion
+- Redesigned homepage, job catalog, application flow, confirmation, support, privacy, auth and management dashboard
+- Application completeness meter and clearer form sections
+- Existing Formspree submission flow preserved
+- Existing Supabase application storage/authentication preserved
+- Management email composer, CSV export and application status workflow preserved
+- Public management/admin links remain unadvertised
+- New favicon, web manifest, robots.txt, sitemap.xml and 404 page
 
-Changes from V19:
-- Career search moved to the first visible mobile viewport so applicants can search immediately without scrolling past the hero message.
-- Mobile search panel is compact and hides secondary metrics/quick-role clutter until later in the experience.
-- Replaced the boxed JPEG brand mark with a transparent vector version of the gold Baron architectural mark.
-- Removed public Management / Admin Panel links from the site header, mobile navigation, and footer. The management page and sign-in page still exist and can be accessed directly by authorized staff.
-- Footer public navigation now focuses only on Applicants and Company links.
-- Email composer branding now uses the transparent logo asset.
+PUBLIC FLOW
+Role discovery -> Application -> Waiting for review -> Further contact by email/phone.
 
-Existing V19 features remain intact, including the 931-role career catalog, Supabase application storage, Formspree application email delivery, management dashboard, support center, responsive layout, and animations.
-
-
-V21 UPDATE
-- Mobile homepage now shows the U.S. Career Marketplace hero first.
-- Career Search panel appears immediately below the hero content.
-- Desktop layout remains unchanged.
+IMPORTANT
+The job-title catalog represents career interests, not guaranteed current vacancies.
+No application fee is charged on this website.

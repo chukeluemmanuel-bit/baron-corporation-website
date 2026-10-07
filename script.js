@@ -1,14 +1,16 @@
 (() => {
   const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
-  document.addEventListener('DOMContentLoaded',()=>{
+  const ready=()=>{
     $$('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());
-    const header=$('.site-header'); const onScroll=()=>header?.classList.toggle('scrolled',scrollY>10); onScroll(); addEventListener('scroll',onScroll,{passive:true});
-    const btn=$('[data-menu-button]'), mobile=$('[data-mobile-menu]');
-    btn?.addEventListener('click',()=>{const open=mobile?.classList.toggle('open');btn.setAttribute('aria-expanded',String(!!open));});
-    $$('[data-mobile-menu] a').forEach(a=>a.addEventListener('click',()=>mobile?.classList.remove('open')));
-    const reveals=$$('.reveal'); if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}}),{threshold:.08});reveals.forEach(el=>io.observe(el))}else reveals.forEach(el=>el.classList.add('is-visible'));
-    $$('.faq-item button').forEach(b=>b.addEventListener('click',()=>b.closest('.faq-item')?.classList.toggle('open')));
-    const fab=$('[data-support-fab]'), drawer=$('[data-support-drawer]'); fab?.addEventListener('click',()=>drawer?.classList.toggle('open'));
-  });
+    const loader=$('.page-loader'); const finish=()=>loader?.classList.add('done'); if(document.readyState==='complete')setTimeout(finish,180);else addEventListener('load',()=>setTimeout(finish,180),{once:true});
+    const progress=$('.scroll-progress i'); const updateProgress=()=>{if(!progress)return;const d=document.documentElement,range=d.scrollHeight-d.clientHeight;progress.style.width=(range>0?Math.min(100,(d.scrollTop/range)*100):0)+'%'};updateProgress();addEventListener('scroll',updateProgress,{passive:true});
+    const header=$('.site-header'); const onScroll=()=>header?.classList.toggle('scrolled',scrollY>8);onScroll();addEventListener('scroll',onScroll,{passive:true});
+    const btn=$('[data-menu-button]'),mobile=$('[data-mobile-menu]');const closeMenu=()=>{mobile?.classList.remove('open');btn?.setAttribute('aria-expanded','false')};btn?.addEventListener('click',()=>{const open=mobile?.classList.toggle('open');btn.setAttribute('aria-expanded',String(!!open))});$$('[data-mobile-menu] a').forEach(a=>a.addEventListener('click',closeMenu));document.addEventListener('click',e=>{if(mobile?.classList.contains('open')&&!mobile.contains(e.target)&&!btn?.contains(e.target))closeMenu()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+    const reveals=$$('.reveal');if('IntersectionObserver'in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -20px'});reveals.forEach(el=>io.observe(el))}else reveals.forEach(el=>el.classList.add('is-visible'));
+    $$('.faq-item button').forEach(b=>b.addEventListener('click',()=>{const item=b.closest('.faq-item');item?.classList.toggle('open');b.setAttribute('aria-expanded',String(item?.classList.contains('open')))}));
+    const fab=$('[data-support-fab]'),drawer=$('[data-support-drawer]'),supportClose=$('[data-support-close]');const closeSupport=()=>drawer?.classList.remove('open');fab?.addEventListener('click',()=>drawer?.classList.toggle('open'));supportClose?.addEventListener('click',closeSupport);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSupport()});
+    $('[data-copy-reference]')?.addEventListener('click',async()=>{const ref=$('#applicationReference')?.textContent?.trim();if(!ref)return;try{await navigator.clipboard.writeText(ref);window.BaronUI?.toast('Application reference copied.')}catch(_){window.BaronUI?.toast('Copy is not available in this browser.')}});
+  };
+  document.addEventListener('DOMContentLoaded',ready);
   window.BaronUI={toast(text){let t=document.querySelector('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.append(t)}t.textContent=text;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2800)}};
 })();
