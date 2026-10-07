@@ -39,3 +39,36 @@
 @media(max-width:640px){.container{width:min(100% - 26px,1180px)}.nav-wrap{height:68px;gap:9px}.brand-mark{width:42px;height:42px}.brand-word strong{font-size:18px;letter-spacing:.2em;margin-right:-.2em}.brand-word span{font-size:5.8px;letter-spacing:.34em;margin-right:-.34em;margin-top:5px}.nav-actions{display:none}.mobile-menu{top:68px;left:13px;right:13px}.hero-v24{padding:40px 0 24px}.hero-grid{display:flex;flex-direction:column;gap:24px}.hero-copy{order:0}.hero-panel{order:1;width:100%;padding:13px;border-radius:21px}.panel-shine{border-radius:21px}.hero h1{font-size:47px;margin:13px 0 17px}.hero-copy>p{font-size:14px;margin-bottom:20px}.hero-actions{margin-bottom:19px}.hero-actions .btn{min-height:48px}.trust-row{gap:10px;font-size:10px}.search-main{grid-template-columns:1fr}.search-action{flex-direction:row}.search-action .btn{padding:0 10px;min-height:48px;font-size:11px}.quick-roles{display:none}.panel-metrics{grid-template-columns:repeat(3,1fr)}.metric-mini{padding:9px}.metric-mini strong{font-size:17px}.hero-bottom{padding-top:21px}.hero-note{font-size:10px}.section{padding:68px 0}.section-heading h2{font-size:39px}.bento-grid{grid-template-columns:1fr}.bento-large{grid-row:auto;min-height:500px}.bento-card{min-height:230px;padding:22px}.category-grid{grid-template-columns:1fr 1fr;gap:9px}.category-card{padding:17px;min-height:160px}.category-card h3{font-size:15px;margin-top:22px}.journey{grid-template-columns:1fr}.journey-step,.journey-step:nth-child(2){border-right:0;border-bottom:1px solid var(--line)}.journey-step:last-child{border-bottom:0}.proof-shell{padding:24px}.proof-stats{grid-template-columns:1fr 1fr}.final-cta{padding:26px}.final-cta>div:last-child{display:grid}.page-hero{padding:48px 0}.page-hero h1{font-size:44px}.catalog-hero-stats{grid-template-columns:repeat(3,1fr)}.catalog-hero-stats div{padding:12px 7px}.catalog-toolbar{top:78px;grid-template-columns:1fr;padding:10px}.catalog-summary{align-items:flex-start;flex-direction:column}.role-grid{grid-template-columns:1fr}.role-card{min-height:205px}.apply-intro{padding:38px 0 20px}.apply-intro h1{font-size:44px}.form-card{padding:17px;border-radius:22px}.selected-role{align-items:flex-start;flex-direction:column;gap:9px}.form-grid{grid-template-columns:1fr}.form-field.full{grid-column:auto}.application-side{grid-template-columns:1fr}.confirmation-card{padding:30px 18px}.confirm-grid{grid-template-columns:1fr}.confirmation-actions{display:grid}.support-grid{grid-template-columns:1fr}.support-card{padding:20px}.support-cta{grid-template-columns:1fr;padding:23px}.support-cta h2{font-size:33px}.safety-grid{grid-template-columns:1fr}.auth-main{padding:25px 0 60px}.auth-card{padding:25px 20px}.auth-card h1{font-size:39px}.admin-nav{min-height:66px}.admin-nav .brand-word{display:none}.admin-nav-actions{gap:6px}.admin-user{display:none}.admin-main{padding-top:16px}.admin-hero{padding:21px}.admin-hero h1{font-size:34px}.metric-grid{grid-template-columns:1fr 1fr}.metric-card{padding:14px}.admin-toolbar{grid-template-columns:1fr}.admin-search{grid-column:auto}.application-card{grid-template-columns:1fr}.application-actions{justify-content:flex-start}.detail-grid{grid-template-columns:1fr}.detail-box.full{grid-column:auto}.email-composer{grid-template-columns:1fr}.footer-links{grid-template-columns:1fr 1fr}.footer-bottom{flex-direction:column}.support-fab{width:52px;min-width:52px;height:52px;padding:0}.support-fab span{display:none}.support-drawer{right:13px;width:calc(100% - 26px)}.page-loader .loader-word{font-size:24px}}
 @media(max-width:390px){.brand-word strong{font-size:16px}.brand-word span{font-size:5.2px}.hero h1{font-size:42px}.search-action{flex-direction:column}.panel-metrics{grid-template-columns:1fr 1fr}.panel-metrics .metric-mini:last-child{grid-column:1/-1}.category-grid{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.page-loader{display:none}.marquee,.hero-aurora,.live-dot i,.mini-progress i,.loading-pulse{animation:none!important}.reveal{transform:none!important;transition:none!important}.btn,.category-card,.role-card{transition:none!important}}
+
+/* V24.1 — keep the Smart Discovery demo contained inside its feature card */
+.bento-search-demo{
+  position:relative;
+  left:auto;
+  right:auto;
+  bottom:auto;
+  width:100%;
+  margin-top:28px;
+  z-index:2;
+}
+.bento-large{
+  min-height:0;
+}
+@media (max-width:640px){
+  .bento-large{min-height:0}
+  .bento-search-demo{
+    margin-top:22px;
+    padding:12px;
+    border-radius:16px;
+    box-shadow:0 14px 34px rgba(7,21,34,.16);
+  }
+  .bento-search-demo span{
+    margin-bottom:7px;
+    padding:11px 12px;
+    font-size:12px;
+  }
+  .bento-search-demo b{
+    padding:9px 7px;
+    line-height:1.35;
+    white-space:normal;
+  }
+}
