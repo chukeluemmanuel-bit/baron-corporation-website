@@ -1,36 +1,40 @@
-BARON CORPORATION WEBSITE - VERSION 18
-CAREER-INTEREST MARKETPLACE REDESIGN
+BARON CORPORATION WEBSITE - VERSION 19
+PREMIUM FULL REDESIGN
 
-WHAT CHANGED
-- Homepage now centers on choosing/searching job titles rather than published vacancies.
-- Built-in catalog contains 900+ common U.S. job titles across major job families.
-- Users can also type any job title even when it is not in the catalog.
-- Live autocomplete suggests matching titles while the user types.
-- Full job-title dropdown is available on the homepage.
-- Preferred U.S. state can be selected.
-- Selecting a title opens the application form directly.
-- Applications end at: Waiting for Review.
-- All later hiring communication is intended to continue through email.
-- No resume is requested in the initial application.
-- Management dashboard lists applications and includes an Email Applicant action.
+CORE EXPERIENCE
+- Completely redesigned premium navy/gold visual system using the new uploaded Baron mark.
+- Responsive sticky header, mobile navigation, animated hero, live role search, role catalog and support center.
+- 931 common U.S. job titles remain available through the built-in career catalog.
+- Applicants may type a custom job title if their exact role is not listed.
+- Career-interest model remains transparent: a job title does not claim a current vacancy exists.
+- Application submissions still go directly to the existing Formspree endpoint and are also copied to Supabase when available.
+- Application form now requires a phone number, supports a preferred call window, saves drafts locally, and generates an application reference.
 
-IMPORTANT TRANSPARENCY
-- The job-title catalog represents career interests/job types.
-- A catalog title does NOT claim a current vacancy exists.
-- Baron Corporation may review the applicant and source a matching opportunity afterward.
-- Submission does not guarantee a vacancy, interview, or employment.
+NEW MANAGEMENT DASHBOARD
+- Premium management dashboard with application counts and filters.
+- Search applicants by name, email, phone or job title.
+- Filter by status and state.
+- Review full application details in a modal.
+- Update status: Waiting for Review / Reviewed / Contacted / Closed.
+- Export filtered applications as CSV.
+- Professional applicant email composer with three templates.
+- Copy styled email into Gmail, open Gmail with a prefilled message, or copy plain text.
+- The default 'Application Received' template says the request was received and that management may contact the applicant by phone or email as soon as a suitable next step is available.
 
-SUPABASE
-Before V17 applications can submit, run v17-database-migration.sql once.
-This makes applications.job_id optional because V17 no longer requires a pre-created vacancy record.
+ADMIN LOGIN FIX
+Frontend management access now recognizes BOTH:
+- mgt.baroncorporation@gmail.com
+- elbaron511@gmail.com
 
-EMAIL NOTIFICATIONS
-Applications are stored in Supabase and visible in management.html.
-Automatic 'new application' notification emails to management still require an outbound email service or server-side email integration.
-The dashboard already provides an Email Applicant button for follow-up.
+IMPORTANT: Supabase RLS policies also need to allow the second email. Run v19-admin-policy-patch.sql ONCE in Supabase SQL Editor. Without that patch, elbaron511@gmail.com may enter the admin page but Supabase can still block application data.
 
+EMAIL NOTE
+This build does not claim to send branded HTML mail directly from Gmail automatically because that would require a mail-provider/API connection. The admin panel provides a safe no-extra-cost workflow:
+1. Open applicant -> Prepare Confirmation Email.
+2. Tap Copy Styled Email.
+3. Tap Open Gmail to Send.
+4. Paste the styled email into Gmail and send.
+If the browser does not support styled clipboard content, the panel automatically falls back to plain-text copy.
 
-V18 EMAIL DELIVERY
-- Applications are sent directly through Formspree endpoint xaenbldo.
-- Successful submissions are also saved to Supabase when available.
-- Applicant is then redirected to Waiting for Review.
+DEPLOYMENT
+Upload/replace these files in the existing GitHub repository and commit to main. Cloudflare should deploy automatically using your existing build configuration.

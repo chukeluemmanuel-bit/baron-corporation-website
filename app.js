@@ -1,175 +1,61 @@
 (() => {
-  const catalog = () => Array.isArray(window.BARON_JOB_CATALOG) ? window.BARON_JOB_CATALOG : [];
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const qs = id => document.getElementById(id);
-  const states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'];
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xaenbldo';
+  const catalog=()=>Array.isArray(window.BARON_JOB_CATALOG)?window.BARON_JOB_CATALOG:[];
+  const $=(id)=>document.getElementById(id); const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const states=['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'];
+  const FORMSPREE_ENDPOINT='https://formspree.io/f/xaenbldo';
+  const applyUrl=(title,family='',state='')=>{const p=new URLSearchParams({role:title});if(family)p.set('family',family);if(state)p.set('state',state);return 'apply.html?'+p.toString()};
+  const reference=()=>`BC-${new Date().toISOString().slice(2,10).replace(/-/g,'')}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
 
-  function applyUrl(title, family='', state=''){
-    const p=new URLSearchParams({role:title}); if(family)p.set('family',family); if(state)p.set('state',state); return 'apply.html?'+p.toString();
-  }
-
-  function setupHome(){
-    const browse=qs('browseRole'), input=qs('roleSearch'), auto=qs('roleAutocomplete'), state=qs('preferredState'), results=qs('roleResults');
-    if(!browse && !input) return;
+  function setupSearchWidgets(){
     const data=catalog();
-    if(browse){
-      const frag=document.createDocumentFragment();
-      data.forEach(r=>{const o=document.createElement('option');o.value=r.title;o.textContent=`${r.title} — ${r.family}`;frag.appendChild(o)});browse.appendChild(frag);
-      browse.addEventListener('change',()=>{if(browse.value){const r=data.find(x=>x.title===browse.value);location.href=applyUrl(r.title,r.family,state?.value||'')}});
-    }
-    const showMatches=(value)=>{
-      const q=value.trim().toLowerCase();
-      if(!q){auto?.classList.add('hidden'); return []}
-      const matches=data.filter(r=>r.title.toLowerCase().includes(q) || r.family.toLowerCase().includes(q)).slice(0,12);
-      if(auto){auto.innerHTML=matches.map(r=>`<button type="button" data-title="${esc(r.title)}" data-family="${esc(r.family)}"><b>${esc(r.title)}</b><span>${esc(r.family)}</span></button>`).join('') || '<div class="auto-empty">No exact suggestion. You can still apply using the title you typed.</div>';auto.classList.remove('hidden');auto.querySelectorAll('button').forEach(b=>b.onclick=()=>location.href=applyUrl(b.dataset.title,b.dataset.family,state?.value||''));}
-      return matches;
-    };
-    input?.addEventListener('input',e=>showMatches(e.target.value));
-    document.addEventListener('click',e=>{if(auto && !auto.contains(e.target) && e.target!==input) auto.classList.add('hidden')});
-    qs('roleSearchForm')?.addEventListener('submit',e=>{e.preventDefault();const raw=input.value.trim();if(!raw)return;const m=showMatches(raw)[0];location.href=applyUrl(m?.title||raw,m?.family||'Other',state?.value||'')});
-    if(results){ renderResults(data.slice(0,72),results,state?.value||''); }
-    qs('showAllRoles')?.addEventListener('click',()=>renderResults(data,results,state?.value||''));
-    document.querySelectorAll('[data-family]').forEach(btn=>btn.addEventListener('click',()=>{
-      const fam=btn.dataset.family; if(input) input.value=fam; const subset=data.filter(r=>r.family===fam); renderResults(subset,results,state?.value||''); results?.scrollIntoView({behavior:'smooth'});
-    }));
-  }
-
-  function renderResults(list, el, state){
-    if(!el) return;
-    el.innerHTML=list.map(r=>`<article class="role-card"><div><span class="role-family">${esc(r.family)}</span><h3>${esc(r.title)}</h3><p>Submit your interest for this type of work. Baron will review your profile and may source a matching opportunity.</p></div><a class="btn btn-gold" href="${applyUrl(r.title,r.family,state)}">Apply</a></article>`).join('');
-    const count=qs('roleCount'); if(count) count.textContent=`${list.length.toLocaleString()} job titles`;
-  }
-
-  async function sendApplicationEmail(payload, preferredState){
-    const fullName=`${payload.first_name} ${payload.last_name}`.trim();
-    const fd=new FormData();
-    fd.append('subject', `New Baron Job Application - ${payload.job_title_snapshot} - ${fullName}`);
-    fd.append('application_status', 'Waiting for Review');
-    fd.append('job_title', payload.job_title_snapshot);
-    fd.append('preferred_work_state', preferredState || 'Any state');
-    fd.append('first_name', payload.first_name);
-    fd.append('last_name', payload.last_name);
-    fd.append('email', payload.email);
-    fd.append('phone', payload.phone || 'Not provided');
-    fd.append('current_city', payload.city);
-    fd.append('current_state', payload.state);
-    fd.append('years_experience', payload.years_experience ?? 'Not provided');
-    fd.append('recent_job_title', payload.recent_job_title || 'Not provided');
-    fd.append('certification', payload.certification || 'Not provided');
-    fd.append('availability', payload.availability || 'Not provided');
-    fd.append('professional_summary', payload.professional_summary);
-    fd.append('additional_information', payload.additional_info || 'None');
-    fd.append('consent', 'Yes');
-    fd.append('website', 'baroncorporation.space');
-
-    const response=await fetch(FORMSPREE_ENDPOINT, {
-      method:'POST',
-      body:fd,
-      headers:{'Accept':'application/json'}
+    document.querySelectorAll('[data-job-search]').forEach(root=>{
+      const input=root.querySelector('[data-role-input]'), auto=root.querySelector('[data-role-auto]'), state=root.querySelector('[data-role-state]'), form=root.querySelector('form');
+      const show=q=>{q=String(q||'').trim().toLowerCase();if(!auto)return[];if(!q){auto.classList.add('hidden');return[]}const matches=data.filter(r=>r.title.toLowerCase().includes(q)||r.family.toLowerCase().includes(q)).slice(0,12);auto.innerHTML=matches.length?matches.map(r=>`<button type="button" data-title="${esc(r.title)}" data-family="${esc(r.family)}"><b>${esc(r.title)}</b><span>${esc(r.family)}</span></button>`).join(''):'<div class="autocomplete-empty">No exact match. You can still apply using the title you typed.</div>';auto.classList.remove('hidden');auto.querySelectorAll('button').forEach(b=>b.onclick=()=>location.href=applyUrl(b.dataset.title,b.dataset.family,state?.value||''));return matches};
+      input?.addEventListener('input',e=>show(e.target.value));form?.addEventListener('submit',e=>{e.preventDefault();const raw=input?.value.trim();if(!raw)return;const m=show(raw)[0];location.href=applyUrl(m?.title||raw,m?.family||'Other',state?.value||'')});
+      document.addEventListener('click',e=>{if(auto&&!auto.contains(e.target)&&e.target!==input)auto.classList.add('hidden')});
     });
-    if(!response.ok){
-      let message='Could not email your application. Please try again.';
-      try{
-        const data=await response.json();
-        if(Array.isArray(data?.errors) && data.errors.length){
-          message=data.errors.map(x=>x.message).filter(Boolean).join(', ') || message;
-        } else if(data?.error){
-          message=data.error;
-        }
-      }catch(_){ }
-      throw new Error(message);
-    }
+    document.querySelectorAll('[data-quick-role]').forEach(b=>b.addEventListener('click',()=>location.href=applyUrl(b.dataset.quickRole,b.dataset.family||'Other','')));
   }
 
-  function setupApply(){
-    const form=qs('applicationForm'); if(!form) return;
-    const p=new URLSearchParams(location.search); const role=p.get('role')||''; const family=p.get('family')||'Other'; const pref=p.get('state')||'';
-    const roleInput=form.elements.job_title_snapshot; roleInput.value=role;
-    qs('selectedRole').textContent=role || 'Choose or type a job title below';
-    qs('selectedFamily').textContent=family;
-    const prefSel=form.elements.preferred_state; if(prefSel && states.includes(pref)) prefSel.value=pref;
-    form.addEventListener('submit',async e=>{
-      e.preventDefault();
-      const errorBox=form.querySelector('.form-error'); errorBox.hidden=true;
-      const btn=form.querySelector('button[type=submit]'); btn.disabled=true;btn.textContent='Submitting...';
-      try{
-        const fd=new FormData(form);
-        if(fd.get('website')){ btn.disabled=false;btn.textContent='Submit Application'; return; }
-        let sessionUserId=null;
-        if(window.baronSupabase){
-          try{
-            const {data:sessionData}=await window.baronSupabase.auth.getSession();
-            sessionUserId=sessionData?.session?.user?.id||null;
-          }catch(_){ }
-        }
-        const preferred=fd.get('preferred_state')||'Any state';
-        const notes=[`Preferred work state: ${preferred}`, fd.get('additional_info')||''].filter(Boolean).join('\n\n');
-        const payload={
-          job_id:null,
-          job_title_snapshot:String(fd.get('job_title_snapshot')||'').trim(),
-          user_id:sessionUserId,
-          first_name:String(fd.get('first_name')||'').trim(),
-          last_name:String(fd.get('last_name')||'').trim(),
-          email:String(fd.get('email')||'').trim(),
-          phone:String(fd.get('phone')||'').trim()||null,
-          city:String(fd.get('city')||'').trim(),
-          state:String(fd.get('state')||'').trim(),
-          years_experience:fd.get('years_experience')===''?null:Number(fd.get('years_experience')),
-          recent_job_title:String(fd.get('recent_job_title')||'').trim()||null,
-          certification:String(fd.get('certification')||'').trim()||null,
-          availability:String(fd.get('availability')||'').trim()||null,
-          professional_summary:String(fd.get('professional_summary')||'').trim(),
-          additional_info:notes||null,
-          consent:true,
-          review_status:'waiting_review'
-        };
-        if(!payload.job_title_snapshot) throw new Error('Please enter the job title you are interested in.');
+  function setupBrowseSelect(){const s=$('browseRole');if(!s)return;catalog().forEach(r=>{const o=document.createElement('option');o.value=r.title;o.textContent=`${r.title} — ${r.family}`;s.appendChild(o)});s.addEventListener('change',()=>{const r=catalog().find(x=>x.title===s.value);if(r)location.href=applyUrl(r.title,r.family,$('preferredState')?.value||'')})}
 
-        // Email delivery is the primary submission path. Do not show success unless Formspree accepts it.
-        await sendApplicationEmail(payload, preferred);
-
-        // Keep the Supabase management copy when available. A database issue should not discard an emailed application.
-        if(window.baronSupabase){
-          try{
-            const {error}=await window.baronSupabase.from('applications').insert(payload);
-            if(error) console.warn('Application emailed but database copy could not be saved:', error.message);
-          }catch(err){
-            console.warn('Application emailed but database copy could not be saved:', err);
-          }
-        }
-
-        const cp=new URLSearchParams({role:payload.job_title_snapshot,email:payload.email});
-        location.href='application-confirmation.html?'+cp.toString();
-      }catch(err){
-        errorBox.textContent=err.message||'Could not submit application.';
-        errorBox.hidden=false;
-        btn.disabled=false;
-        btn.textContent='Submit Application';
-      }
-    });
+  function setupCatalog(){const grid=$('catalogGrid');if(!grid)return;const input=$('catalogSearch'),family=$('familyFilter'),sort=$('sortFilter'),count=$('catalogCount'),more=$('loadMore');const data=catalog();const families=[...new Set(data.map(r=>r.family))].sort();families.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;family.append(o)});let limit=60,current=[];
+    function render(reset=true){if(reset)limit=60;const q=(input.value||'').trim().toLowerCase();current=data.filter(r=>(!q||r.title.toLowerCase().includes(q)||r.family.toLowerCase().includes(q))&&(!family.value||r.family===family.value));current.sort((a,b)=>sort.value==='za'?b.title.localeCompare(a.title):a.title.localeCompare(b.title));const shown=current.slice(0,limit);grid.innerHTML=shown.map(r=>`<article class="role-card"><div><span class="role-family">${esc(r.family)}</span><h3>${esc(r.title)}</h3><p>Express interest in this type of work. Baron Corporation reviews your profile and may source a suitable opportunity.</p></div><a class="btn btn-primary btn-sm" href="${applyUrl(r.title,r.family,'')}">Start Application</a></article>`).join('');count.textContent=`${current.length.toLocaleString()} job titles`;more.hidden=shown.length>=current.length}
+    input.addEventListener('input',()=>render());family.addEventListener('change',()=>render());sort.addEventListener('change',()=>render());more.addEventListener('click',()=>{limit+=60;render(false)});render();
   }
 
-  function setupConfirmation(){
-    const el=qs('confirmationRole'); if(!el)return; const p=new URLSearchParams(location.search); el.textContent=p.get('role')||'your selected job type';
+  async function sendApplicationEmail(payload,preferredState,ref,contactWindow){const fullName=`${payload.first_name} ${payload.last_name}`.trim(),fd=new FormData();fd.append('subject',`New Baron Job Application - ${payload.job_title_snapshot} - ${fullName}`);fd.append('application_reference',ref);fd.append('application_status','Waiting for Review');fd.append('job_title',payload.job_title_snapshot);fd.append('preferred_work_state',preferredState||'Any state');fd.append('first_name',payload.first_name);fd.append('last_name',payload.last_name);fd.append('email',payload.email);fd.append('phone',payload.phone||'Not provided');fd.append('best_time_to_call',contactWindow||'Not provided');fd.append('current_city',payload.city);fd.append('current_state',payload.state);fd.append('years_experience',payload.years_experience??'Not provided');fd.append('recent_job_title',payload.recent_job_title||'Not provided');fd.append('certification',payload.certification||'Not provided');fd.append('availability',payload.availability||'Not provided');fd.append('professional_summary',payload.professional_summary);fd.append('additional_information',payload.additional_info||'None');fd.append('consent','Yes');fd.append('website','baroncorporation.space');const res=await fetch(FORMSPREE_ENDPOINT,{method:'POST',body:fd,headers:{Accept:'application/json'}});if(!res.ok){let m='Could not submit your application. Please try again.';try{const d=await res.json();if(d?.error)m=d.error;if(d?.errors?.length)m=d.errors.map(x=>x.message).filter(Boolean).join(', ')||m}catch(_){}throw new Error(m)}}
+
+  function setupApply(){const form=$('applicationForm');if(!form)return;const p=new URLSearchParams(location.search),role=p.get('role')||'',family=p.get('family')||'Other',pref=p.get('state')||'';form.elements.job_title_snapshot.value=role;$('selectedRole').textContent=role||'Choose or type a job title';$('selectedFamily').textContent=family;if(states.includes(pref))form.elements.preferred_state.value=pref;
+    const draftKey='baron_application_draft_v19';try{const saved=JSON.parse(localStorage.getItem(draftKey)||'null');if(saved&&Date.now()-saved.savedAt<86400000){Object.entries(saved.values||{}).forEach(([k,v])=>{const el=form.elements[k];if(el&&k!=='job_title_snapshot'&&el.type!=='checkbox')el.value=v});$('draftStatus').textContent='Draft restored from this device.'}}catch(_){}
+    let saveTimer;form.addEventListener('input',()=>{clearTimeout(saveTimer);saveTimer=setTimeout(()=>{const values={};new FormData(form).forEach((v,k)=>{if(k!=='website')values[k]=v});localStorage.setItem(draftKey,JSON.stringify({savedAt:Date.now(),values}));$('draftStatus').textContent='Draft saved on this device.'},500)});
+    form.addEventListener('submit',async e=>{e.preventDefault();const err=form.querySelector('.form-error');err.hidden=true;const btn=form.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Submitting securely…';try{const fd=new FormData(form);if(fd.get('website'))return;let uid=null;if(window.baronSupabase){try{uid=(await window.baronSupabase.auth.getSession()).data?.session?.user?.id||null}catch(_){}}const preferred=fd.get('preferred_state')||'Any state',contact=String(fd.get('contact_window')||'').trim(),ref=reference();const notes=[`Application reference: ${ref}`,`Preferred work state: ${preferred}`,`Best time to call: ${contact||'Not provided'}`,String(fd.get('additional_info')||'').trim()].filter(Boolean).join('\n\n');const payload={job_id:null,job_title_snapshot:String(fd.get('job_title_snapshot')||'').trim(),user_id:uid,first_name:String(fd.get('first_name')||'').trim(),last_name:String(fd.get('last_name')||'').trim(),email:String(fd.get('email')||'').trim(),phone:String(fd.get('phone')||'').trim()||null,city:String(fd.get('city')||'').trim(),state:String(fd.get('state')||'').trim(),years_experience:fd.get('years_experience')===''?null:Number(fd.get('years_experience')),recent_job_title:String(fd.get('recent_job_title')||'').trim()||null,certification:String(fd.get('certification')||'').trim()||null,availability:String(fd.get('availability')||'').trim()||null,professional_summary:String(fd.get('professional_summary')||'').trim(),additional_info:notes||null,consent:true,review_status:'waiting_review'};if(!payload.job_title_snapshot)throw new Error('Please enter the job title you are interested in.');if(!payload.phone)throw new Error('Please provide a phone number so management can contact you if needed.');await sendApplicationEmail(payload,preferred,ref,contact);if(window.baronSupabase){try{const {error}=await window.baronSupabase.from('applications').insert(payload);if(error)console.warn(error.message)}catch(ex){console.warn(ex)}}localStorage.removeItem(draftKey);location.href=`application-confirmation.html?${new URLSearchParams({role:payload.job_title_snapshot,email:payload.email,ref}).toString()}`}catch(ex){err.textContent=ex.message||'Could not submit application.';err.hidden=false;btn.disabled=false;btn.textContent='Submit Application'}})}
+
+  function setupConfirmation(){if(!$('confirmationRole'))return;const p=new URLSearchParams(location.search);$('confirmationRole').textContent=p.get('role')||'your selected job type';$('applicationReference').textContent=p.get('ref')||'Generated after submission'}
+
+  function setupAdmin(){const list=$('applicationsList');if(!list)return;let all=[],selected=null;const statusLabel=s=>({'waiting_review':'Waiting for Review','reviewed':'Reviewed','contacted':'Contacted','closed':'Closed'}[s]||s||'Waiting for Review');const statusClass=s=>s==='contacted'?'green':s==='closed'?'red':s==='reviewed'?'blue':'gold';
+    const wait=()=>new Promise(r=>setTimeout(r,250));(async()=>{for(let i=0;i<24&&!window.baronSupabase;i++)await wait();if(!window.baronSupabase){list.innerHTML='<div class="empty-state">Could not connect to the application database.</div>';return}const {data:sessionData}=await window.baronSupabase.auth.getSession();if(!window.isBaronAdmin?.(sessionData?.session?.user?.email))return;const {data,error}=await window.baronSupabase.from('applications').select('*').order('created_at',{ascending:false}).limit(500);if(error){list.innerHTML=`<div class="empty-state">${esc(error.message)}<br><small>If you are using elbaron511@gmail.com, run the V19 admin policy patch in Supabase.</small></div>`;return}all=data||[];renderStats();render()})();
+    const filters={q:$('adminSearch'),status:$('adminStatus'),state:$('adminState')};
+    Object.values(filters).forEach(el=>el?.addEventListener('input',render));Object.values(filters).forEach(el=>el?.addEventListener('change',render));
+    function filtered(){const q=(filters.q?.value||'').trim().toLowerCase(),st=filters.status?.value||'',state=filters.state?.value||'';return all.filter(a=>(!q||`${a.first_name} ${a.last_name} ${a.email} ${a.job_title_snapshot} ${a.phone||''}`.toLowerCase().includes(q))&&(!st||a.review_status===st)&&(!state||a.state===state))}
+    function renderStats(){const today=new Date().toDateString();$('statTotal').textContent=all.length;$('statToday').textContent=all.filter(a=>new Date(a.created_at).toDateString()===today).length;$('statRoles').textContent=new Set(all.map(a=>a.job_title_snapshot)).size;$('statContacted').textContent=all.filter(a=>a.review_status==='contacted').length}
+    function render(){const data=filtered();$('adminResultCount').textContent=`${data.length} application${data.length===1?'':'s'}`;if(!data.length){list.innerHTML='<div class="empty-state"><h3>No matching applications</h3><p>Adjust your filters or wait for new submissions.</p></div>';return}list.innerHTML=data.map(a=>`<article class="application-card"><div><span class="pill ${statusClass(a.review_status)}">${esc(statusLabel(a.review_status))}</span><h3>${esc(a.job_title_snapshot)}</h3><p><b>${esc(a.first_name)} ${esc(a.last_name)}</b> · ${esc(a.city)}, ${esc(a.state)} · ${new Date(a.created_at).toLocaleString()}</p><div class="application-meta"><span class="pill">${esc(a.email)}</span><span class="pill">${esc(a.phone||'No phone')}</span><span class="pill">${a.years_experience??'—'} yrs exp.</span></div></div><div class="application-actions"><button class="btn btn-light btn-sm" data-view="${a.id}">Review</button><button class="btn btn-primary btn-sm" data-email="${a.id}">Confirmation Email</button></div></article>`).join('');list.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>openDetail(b.dataset.view));list.querySelectorAll('[data-email]').forEach(b=>b.onclick=()=>openEmail(b.dataset.email))}
+    function get(id){return all.find(a=>String(a.id)===String(id))}
+    function openDetail(id){selected=get(id);if(!selected)return;const d=$('detailBody');d.innerHTML=`<div class="detail-grid"><div class="detail-box"><span>Applicant</span><p>${esc(selected.first_name)} ${esc(selected.last_name)}</p></div><div class="detail-box"><span>Applied for</span><p>${esc(selected.job_title_snapshot)}</p></div><div class="detail-box"><span>Email</span><p>${esc(selected.email)}</p></div><div class="detail-box"><span>Phone</span><p>${esc(selected.phone||'Not provided')}</p></div><div class="detail-box"><span>Location</span><p>${esc(selected.city)}, ${esc(selected.state)}</p></div><div class="detail-box"><span>Experience</span><p>${selected.years_experience??'Not provided'} years</p></div><div class="detail-box"><span>Recent role</span><p>${esc(selected.recent_job_title||'Not provided')}</p></div><div class="detail-box"><span>Availability</span><p>${esc(selected.availability||'Not provided')}</p></div><div class="detail-box"><span>Certification</span><p>${esc(selected.certification||'Not provided')}</p></div><div class="detail-box"><span>Submitted</span><p>${new Date(selected.created_at).toLocaleString()}</p></div><div class="detail-box full"><span>Professional summary</span><p>${esc(selected.professional_summary||'')}</p></div><div class="detail-box full"><span>Additional information</span><p style="white-space:pre-wrap">${esc(selected.additional_info||'None')}</p></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><select id="detailStatus" class="status-select"><option value="waiting_review">Waiting for Review</option><option value="reviewed">Reviewed</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select><button class="btn btn-dark btn-sm" id="saveStatus">Save Status</button><button class="btn btn-primary btn-sm" id="detailEmail">Prepare Confirmation Email</button></div>`;$('detailStatus').value=selected.review_status||'waiting_review';$('saveStatus').onclick=saveStatus;$('detailEmail').onclick=()=>{closeModal('detailModal');openEmail(selected.id)};openModal('detailModal')}
+    async function saveStatus(){const v=$('detailStatus').value;const {error}=await window.baronSupabase.from('applications').update({review_status:v}).eq('id',selected.id);if(error){window.BaronUI?.toast(error.message);return}selected.review_status=v;renderStats();render();window.BaronUI?.toast('Application status updated.');closeModal('detailModal')}
+    function emailData(a,template){const name=a.first_name||'there';const role=a.job_title_snapshot||'job application';let subject=`Application Received | Baron Corporation`;let body=`Hello ${name},\n\nThank you for submitting your ${role} application through Baron Corporation. We have received your request and our team is reviewing the information you provided.\n\nIf your profile is selected for the next step, a member of our team will contact you by phone or email as soon as possible. Please keep the phone number and email address provided in your application available.\n\nYou do not need to send any payment, banking information, password, security code, or Social Security number.\n\nThank you for your interest.\n\nBaron Corporation Careers\nbaroncorporation.space`;
+      if(template==='phone'){subject=`Next Step: Phone Contact | Baron Corporation`;body=`Hello ${name},\n\nWe have reviewed your ${role} application and would like to continue with a phone conversation. A member of the Baron Corporation team will contact you using the phone number provided in your application.\n\nPlease keep your phone available. If your contact information has changed, reply to this email with the updated details.\n\nBaron Corporation Careers\nbaroncorporation.space`}
+      if(template==='info'){subject=`Additional Information Requested | Baron Corporation`;body=`Hello ${name},\n\nThank you for your ${role} application. We are reviewing your request and need a little more information before we can continue.\n\nPlease reply to this email with the requested details. Do not send banking information, passwords, security codes, Social Security numbers, or any payment.\n\nBaron Corporation Careers\nbaroncorporation.space`}
+      return{subject,body}}
+    function openEmail(id){selected=get(id);if(!selected)return;$('emailTo').value=selected.email;$('emailTemplate').value='received';refreshEmail();openModal('emailModal')}
+    function refreshEmail(){if(!selected)return;const d=emailData(selected,$('emailTemplate').value),name=esc(selected.first_name||'Applicant'),role=esc(selected.job_title_snapshot||'job application');$('emailSubject').value=d.subject;$('emailPlain').value=d.body;$('emailPreviewBody').innerHTML=`<h2>Application received.</h2><p>Hello ${name},</p><p>Thank you for submitting your <strong>${role}</strong> application through Baron Corporation. We have received your request and our team is reviewing the information you provided.</p><p>If your profile is selected for the next step, a member of our team will contact you by <strong>phone or email as soon as possible</strong>. Please keep the contact information provided in your application available.</p><p style="padding:12px;border-radius:10px;background:#fff8e7;color:#6b511f"><strong>Security reminder:</strong> Baron Corporation will not ask you to send passwords, banking information, security codes, Social Security numbers, or payment as part of this confirmation.</p><p>Thank you for your interest.</p><p><strong>Baron Corporation Careers</strong><br>baroncorporation.space</p>`}
+    $('emailTemplate')?.addEventListener('change',()=>{const d=emailData(selected,$('emailTemplate').value);$('emailSubject').value=d.subject;$('emailPlain').value=d.body;refreshEmail()});
+    $('copyPlain')?.addEventListener('click',async()=>{await navigator.clipboard.writeText($('emailPlain').value);window.BaronUI?.toast('Email text copied.')});
+    $('copyStyled')?.addEventListener('click',async()=>{const html=`<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;border:1px solid #e3e8ee;border-radius:16px;overflow:hidden"><div style="background:#07111f;padding:22px;color:#fff"><img src="https://baroncorporation.space/baron-mark.jpeg" alt="Baron Corporation" style="width:105px;height:58px;object-fit:cover;border-radius:9px"><div style="color:#e7bb5c;font-size:11px;font-weight:bold;letter-spacing:2px;margin-top:12px">BARON CORPORATION CAREERS</div></div><div style="padding:28px;color:#25364a;line-height:1.65">${$('emailPreviewBody').innerHTML}</div><div style="padding:15px 28px;background:#f5f7fa;color:#718095;font-size:11px">Baron Corporation · baroncorporation.space</div></div>`;try{if(window.ClipboardItem){const item=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([$('emailPlain').value],{type:'text/plain'})});await navigator.clipboard.write([item]);window.BaronUI?.toast('Styled email copied. Paste it into Gmail.')}else throw 0}catch(_){await navigator.clipboard.writeText($('emailPlain').value);window.BaronUI?.toast('Plain email copied. Styled copy is not supported by this browser.')}});
+    $('openGmail')?.addEventListener('click',()=>{if(!selected)return;const subject=encodeURIComponent($('emailSubject').value),body=encodeURIComponent($('emailPlain').value),to=encodeURIComponent(selected.email);window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`,'_blank')});
+    $('exportCsv')?.addEventListener('click',()=>{const rows=[['Submitted','Name','Email','Phone','Job Title','City','State','Experience','Status'],...filtered().map(a=>[a.created_at,`${a.first_name} ${a.last_name}`,a.email,a.phone||'',a.job_title_snapshot,a.city,a.state,a.years_experience??'',a.review_status])];const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'})),a=document.createElement('a');a.href=url;a.download='baron-applications.csv';a.click();URL.revokeObjectURL(url)});
+    function openModal(id){document.getElementById(id)?.classList.add('open');document.body.classList.add('no-scroll')}function closeModal(id){document.getElementById(id)?.classList.remove('open');document.body.classList.remove('no-scroll')}document.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));document.querySelectorAll('.admin-modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
   }
 
-  async function setupManagement(){
-    const list=qs('applicationsList'); if(!list)return;
-    const wait=()=>new Promise(r=>setTimeout(r,250));
-    for(let i=0;i<20 && !window.baronSupabase;i++) await wait();
-    if(!window.baronSupabase){list.innerHTML='<div class="notice">Could not connect to the application database.</div>';return;}
-    const {data:sessionData}=await window.baronSupabase.auth.getSession();
-    if((sessionData?.session?.user?.email||'').toLowerCase()!=='mgt.baroncorporation@gmail.com') return;
-    const {data,error}=await window.baronSupabase.from('applications').select('*').order('created_at',{ascending:false}).limit(200);
-    if(error){list.innerHTML=`<div class="notice error">${esc(error.message)}</div>`;return}
-    if(!data?.length){list.innerHTML='<div class="empty-state"><h3>No applications yet</h3><p>New submissions will appear here.</p></div>';return}
-    list.innerHTML=data.map(a=>{
-      const subject=encodeURIComponent(`Baron Corporation - ${a.job_title_snapshot} application`);
-      const body=encodeURIComponent(`Hello ${a.first_name},\n\nWe are contacting you regarding your ${a.job_title_snapshot} application submitted through Baron Corporation.\n\n`);
-      return `<article class="application-card"><div class="application-top"><div><span class="status-pill">Waiting for Review</span><h3>${esc(a.job_title_snapshot)}</h3><p>${esc(a.first_name)} ${esc(a.last_name)} · ${esc(a.city)}, ${esc(a.state)}</p></div><time>${new Date(a.created_at).toLocaleString()}</time></div><div class="application-details"><p><b>Email:</b> <a href="mailto:${encodeURIComponent(a.email)}">${esc(a.email)}</a></p><p><b>Phone:</b> ${esc(a.phone||'Not provided')}</p><p><b>Experience:</b> ${a.years_experience ?? 'Not provided'} years</p><p><b>Recent role:</b> ${esc(a.recent_job_title||'Not provided')}</p><p><b>Availability:</b> ${esc(a.availability||'Not provided')}</p><p><b>Certification:</b> ${esc(a.certification||'Not provided')}</p><p class="wide"><b>Professional summary:</b><br>${esc(a.professional_summary||'')}</p><p class="wide"><b>Additional information:</b><br>${esc(a.additional_info||'None')}</p></div><a class="btn btn-dark" href="mailto:${encodeURIComponent(a.email)}?subject=${subject}&body=${body}">Email Applicant</a></article>`
-    }).join('');
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{setupHome();setupApply();setupConfirmation();setupManagement();});
+  document.addEventListener('DOMContentLoaded',()=>{setupSearchWidgets();setupBrowseSelect();setupCatalog();setupApply();setupConfirmation();setupAdmin()});
 })();
