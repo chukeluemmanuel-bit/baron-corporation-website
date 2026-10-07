@@ -83,3 +83,70 @@
   .brand-mark{width:54px;height:50px;}
   .footer-links{grid-template-columns:1fr 1fr;}
 }
+
+
+/* V22 header wordmark + required application fields */
+.header-wordmark{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-width:178px;
+  padding:2px 4px 0;
+  background:transparent;
+  color:var(--ink);
+  line-height:1;
+  border:0;
+  box-shadow:none;
+}
+.header-wordmark-main{
+  font-family:Manrope,Inter,sans-serif;
+  font-size:27px;
+  font-weight:800;
+  letter-spacing:.22em;
+  margin-right:-.22em;
+  color:#0a2642;
+}
+.header-wordmark-sub{
+  position:relative;
+  margin-top:6px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.43em;
+  margin-right:-.43em;
+  color:#b68325;
+}
+.header-wordmark-sub::before,.header-wordmark-sub::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:28px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#d7a63f);
+}
+.header-wordmark-sub::before{right:calc(100% + 10px);transform:scaleX(-1)}
+.header-wordmark-sub::after{left:calc(100% + 10px)}
+.required-mark{color:#b93832;font-weight:900}
+.required-note{margin:14px 0 19px;padding:11px 13px;border:1px solid #efd7aa;background:#fff9ed;border-radius:12px;color:#6c5730;font-size:12px;font-weight:650}
+.required-note span{color:#b93832;font-weight:900}
+.form-field input:required:invalid:not(:placeholder-shown),.form-field textarea:required:invalid:not(:placeholder-shown),.form-field select:required:invalid{border-color:#d6dee8}
+@media(max-width:980px){
+  .header-wordmark{min-width:150px}
+  .header-wordmark-main{font-size:24px}
+  .header-wordmark-sub{font-size:8px}
+}
+@media(max-width:640px){
+  .nav-wrap{gap:12px}
+  .header-wordmark{min-width:150px;flex:1;max-width:190px;margin-left:2px}
+  .header-wordmark-main{font-size:23px;letter-spacing:.18em;margin-right:-.18em}
+  .header-wordmark-sub{font-size:7px;letter-spacing:.37em;margin-right:-.37em;margin-top:5px}
+  .header-wordmark-sub::before,.header-wordmark-sub::after{width:20px}
+  .header-wordmark-sub::before{right:calc(100% + 7px)}
+  .header-wordmark-sub::after{left:calc(100% + 7px)}
+  .menu-toggle{padding:5px;margin-left:auto}
+}
+@media(max-width:390px){
+  .header-wordmark{min-width:132px}
+  .header-wordmark-main{font-size:20px}
+  .header-wordmark-sub{font-size:6.5px}
+}
